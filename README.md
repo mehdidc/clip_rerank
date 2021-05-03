@@ -16,5 +16,5 @@ Here is an example:
 
 What will this do?
 
-this will look for all jpg images in `<FOLDER>`, apply CLIP similary with the provided text, then rank the images, then save the ranked
+this will look for all jpg images in `<FOLDER>`, apply CLIP similarity with the provided text, then rank the images, then save the ranked
 images into the target folder. Filenames on target folder will start from 0, which will be the image with highest CLIP score. 
