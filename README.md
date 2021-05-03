@@ -1,6 +1,6 @@
 # clip_rerank
 
-Simple CLI script to re-rank images.
+Simple script to re-rank images using OpenAI's CLIP https://github.com/openai/CLIP.
 
 ## How to install ?
 
