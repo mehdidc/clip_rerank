@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import os
+from clize import run
+import torch
+import clip
+from PIL import Image
+from glob import glob
+
+def main(pattern, *, text="bird", target_folder="reranked", top:int=None):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model, preprocess = clip.load("ViT-B/32", device=device)
+    paths = glob(pattern)
+    score = {}
+    for path in paths:
+        image = preprocess(Image.open(path)).unsqueeze(0).to(device)
+        text_ = clip.tokenize([text]).to(device)
+        with torch.no_grad():
+            image_features = model.encode_image(image)
+            text_features = model.encode_text(text_)
+            logits_per_image, logits_per_text = model(image, text_)
+            score[path] =  logits_per_image.item()
+            print(path, score[path])
+    paths = sorted(paths, key=lambda f:-score[f])
+    if top:
+        paths = paths[0:top]
+    os.makedirs(target_folder, exist_ok=True)
+    for i, path in enumerate(paths):
+        out_path = os.path.join(target_folder, f"{i:010d}.png")
+        Image.open(path).save(out_path)
+
+if __name__ == "__main__":
+    run(main)
